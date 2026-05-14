@@ -1,0 +1,19 @@
+# Core Libraries
+numpy==1.23.0
+pandas==1.5.0
+scikit-learn==1.3.0
+matplotlib==3.6.0
+seaborn==0.12.0
+jupyter==1.0.0
+
+# Deep Learning (future)
+tensorflow==2.14.0
+torch==2.0.0
+torchvision==0.15.0
+
+# Gradient Boosting (future)
+xgboost==2.0.0
+lightgbm==4.0.0
+
+# Optional Utilities
+tqdm==4.65.0
