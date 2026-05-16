@@ -43,7 +43,7 @@ The goal of this repository is to:
 
 ## 📁 Repository Structure
 ```
-applied-ml-lab/
+Applied-ML-Lab/
 
 ├── README.md
 
@@ -65,6 +65,7 @@ applied-ml-lab/
 │ └── visualization/
 
 ├── utils/
+│ └── preprocessing.py
 
 ├── data/
 │ ├── raw/
@@ -97,6 +98,8 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
+---
+
 ## 📚 Learning Journey Log
 
 | Date | Update |
@@ -104,6 +107,8 @@ jupyter notebook
 | **Apr 2026**| Repository launched with core ML projects |
 | **Future** | Added deep learning section | 
 | **Future** | NLP and computer vision modules |
+
+---
 
 ## About Me
 
@@ -115,6 +120,8 @@ This repository is both a learning path and a professional showcase of my evolvi
 - 📧 Academic Email: Erfan.Taherirani@email.kntu.ac.ir
 - 💼 LinkedIn: ...
 - 🐍 GitHub: https://github.com/Erfan-Taherirani
+
+---
 
 ## ⭐ Feedback and Collabration
 
