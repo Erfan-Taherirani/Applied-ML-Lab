@@ -5,6 +5,10 @@ ML projects
 Author: Erfan Taherirani
 Email: e.taherirani81@gmail.com
 Github: Erfan-Taherirani
+
+Features:
+    - silhouette_analysis
+    - elbow_method
 """
 import numpy as np
 import seaborn as sns

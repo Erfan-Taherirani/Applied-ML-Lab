@@ -23,6 +23,95 @@ def detect_mixed_types(df: pd.DataFrame) -> dict:
 
 	return mixed_types
 
+def missing_value_table(
+	df: pd.DataFrame, include_zero_missings: bool = True
+) -> pd.DataFrame:
+	"""Return a Concise Summary About the Missing Values
+
+	Print shape of the dataset and return a pandas data frame about the 
+	missing values consists of 'missing count' and 'missing percentage'
+
+	:param df: Input Data Frame.
+	:param include_zero_missings: Indicate where the return data frame has the 
+	information of the features with zero missing values or not, defaults to True
+	:param categorize_missingness_: Categorize the data by missingness, defaults to True
+	:param threshold: The threshold for the categorization of the missingness, defaults to 5
+	:return missing_df: The output data frame of missing values informations
+	"""
+	missing_counts = df.isnull().sum()
+	missing_percentage = df.isnull().sum() / df.shape[0] * 100
+	print(f"Shape of the dataset: {df.shape}")
+	print(f"Number of Features with Missing Values: {missing_counts[missing_counts != 0].shape[0]}")
+
+	if include_zero_missings:
+		missing_df = pd.concat(
+			[missing_counts, missing_percentage],
+			axis=1,
+			keys=["Missing Count", "Missing Percentage"]
+		)
+		return missing_df.sort_values(by="Missing Percentage", ascending=False)
+	else:
+		missing_df = pd.concat(
+			[missing_counts, missing_percentage],
+			axis=1,
+			keys=["Missing Count", "Missing Percentage"]
+		)
+		return missing_df[missing_df["Missing Count"] != 0].sort_values(
+			by="Missing Percentage",
+			ascending=False
+		)
+
+
+def detect_suspicious_values(series: pd.Series, suspicious_values: list) -> None:
+	# TODO: write a code that process a feature and returns a report about the suspicious missing values in the feature
+	pass
+
+def categorize_missingness(df: pd.DataFrame, threshold: float = 30) -> None:
+	"""Print Features with different missing value categories
+
+	:param df: The input data frame
+	:param threshold: The threshold that separates low and high missingness
+	"""
+	missing_count = df.isnull().sum()
+	missing_percentage = df.isnull().sum() / df.shape[0] * 100
+	missing_df = pd.DataFrame(
+		{
+			"missing_count": missing_count,
+			"missing_percentage": missing_percentage
+		}
+	)
+	no_missing = missing_df[missing_df['missing_count'] == 0].index
+	low_missing = missing_df[(missing_df['missing_count'] != 0) & (missing_df['missing_percentage'] < threshold)].index
+	high_missing = missing_df[(missing_df['missing_count'] != 0) & (missing_df['missing_percentage'] > threshold)].index
+	print(f"Features with no missing values: {no_missing.to_list()}")
+	print(f"Features with lower than %{threshold} missing values: {low_missing.to_list()}")
+	print(f"Features with higher than %{threshold} missing values: {high_missing.to_list()}")
+
+
+def describe(df: pd.DataFrame) -> pd.DataFrame:
+	"""Generate a summary statistics of the dataframe
+
+	:param df: Input dataframe
+	:return: Summary statistics dataframe
+	"""
+	numeric_dtypes = [
+		np.int8, np.int16, np.int32, np.int64, # integers
+		np.float16, np.float32, np.float64, np.float128 # floats
+	]
+	numeric_columns = [column for column in df.columns if (df[column].dtype) in numeric_dtypes]
+	df = df[numeric_columns]
+
+	describe_df = pd.DataFrame(
+    	data=[
+        	df.count(), df.mean(), df.median(), df.std(), df.var(), df.min(),
+        	df.quantile(0.25), df.quantile(0.5), df.quantile(0.75), df.max(), df.max() - df.min()
+    	],
+    	columns=df.columns,
+    	index=["count", "mean", "median", "std", "variance", "min", "25%", "50%", "75%", "max", "range"]
+	)
+
+	return describe_df
+
 
 def clean_numeric_column(series: pd.Series) -> pd.Series:
     """Clean a numeric column and fix it's dtype.
@@ -41,70 +130,18 @@ def clean_numeric_column(series: pd.Series) -> pd.Series:
     return numeric_series
 
 
-def imputation_comaparison(df: pd.DataFrame, feature_name: str) -> plt.Figure # maybe:
+def imputation_comaparison(df: pd.DataFrame, feature_name: str) -> plt.Figure: # maybe
 	# TODO: write a code that gives a data frame and the feature's name in it that we wanna impute the missing values in it using a technique
 	# ... then run multiple imputaion techniques on it and returns the histrogram distribution of the feature after each imputation technique
 	pass
 
 def potential_outliers(df: pd.Series):
 	# TODO: write a code that prints the potential outliers of a feature1
+	pass
 
 class missing:
 	# TODO: create a dashboard for the missing values a make a comprehensive
 	# visualization about the data using streamlit
-	def missing_value_table(
-		self, df: pd.DataFrame, include_zero_missings: bool = True,
-		categorize_missingness_: bool = True, threshold: float = 5.0
-	) -> pd.DataFrame:
-		"""Return a Concise Summary About the Missing Values
-
-		Print shape of the dataset and return a pandas data frame about the 
-		missing values consists of 'missing count' and 'missing percentage'
-
-		:param df: Input Data Frame.
-		:param include_zero_missings: Indicate where the return data frame has the 
-		information of the features with zero missing values or not, defaults to True
-		:param categorize_missingness_: Categorize the data by missingness, defaults to True
-		:param threshold: The threshold for the categorization of the missingness, defaults to 5
-		:return missing_df: The output data frame of missing values informations
-		"""
-		missing_counts = df.isnull().sum()
-		missing_percentage = df.isnull().sum() / df.shape[0] * 100
-		print(f"Shape of the dataset: {df.shape}")
-		print(f"Number of Features with Missing Values: {missing_counts[missing_counts != 0].shape[0]}")
-		if categorize_missingness_:
-			self._categorize_missingness(df=df, threshold=threshold)
-
-		if include_zero_missings:
-			missing_df = pd.concat(
-				[missing_counts, missing_percentage],
-				axis=1,
-				keys=["Missing Count", "Missing Percentage"]
-			)
-			return missing_df.sort_values(by="Missing Percentage", ascending=False)
-		else:
-			missing_df = pd.concat(
-				[missing_counts, missing_percentage],
-				axis=1,
-				keys=["Missing Count", "Missing Percentage"]
-			)
-			return missing_df[missing_df["Missing Count"] != 0].sort_values(
-				by="Missing Percentage",
-				ascending=False
-			)
-
-	@staticmethod
-	def matrix(df: pd.DataFrame) -> None:
-		hm = df.isnull()
-		ax = sns.heatmap(
-			data=hm,
-			cbar=False,
-			cmap="viridis",
-			yticklabels=False
-		)
-
-		ax.set_title("Matrix of the Missing Values")
-
 	@staticmethod
 	def detect_suspicious_values(series: pd.Series, suspicious_values: list) -> None:
 		# TODO: write a code that process a feature and returns a report about the suspicious missing values in the feature
@@ -137,6 +174,7 @@ class Irregularities:
 	def detect_potential_outliers(S: pd.Series) -> None:
 		# TODO: write a code that prints the potential outliers of a feature using `z-score` and `IQR` statistical methods.
 		# it's obvious that this is an uvariate outlier detection technique
+		pass
 
 def detect_outliers(s: pd.Series) -> None:
 	# TODO: write a code that detects outliers based on these techniques: `Z-score`, `IQR`, `Box Plot`, `Scatter Plot`, `LOF Algorithm`, `Isolation Forest Algorithm`
