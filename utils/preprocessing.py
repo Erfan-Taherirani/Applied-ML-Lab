@@ -130,6 +130,44 @@ def clean_numeric_column(series: pd.Series) -> pd.Series:
     return numeric_series
 
 
+def detect_potential_outliers(
+	df: pd.DataFrame,
+    feature: str,
+    method: str = "z-score",
+    z_score_threshold: float = 3
+) -> pd.Index:
+    """Detect potential outliers using statistical methods
+    
+    This function detects potential univariate outliers using one of the
+	statistical methods [z-score, IQR] from a feature in a data frame and
+	return their indicies.
+
+	:param df: The input data frame
+	:param feature: Feature you want to detect its potential outliers
+	:param method: Statistical method used, defaults to "z-score"
+	:param z_score_threshold: threshold for z-score method, defaults to 3
+	:return: Indicies of the potential outliers
+	"""
+    if method == "z-score":
+        mean_ = df[feature].mean()
+        std_ = df[feature].std()
+        z_score = abs((df[feature] - mean_) / std_)
+        
+        potential_outliers_indicies = df.loc[(z_score > z_score_threshold), feature].index
+        
+    if method.upper() == "IQR":
+        iqr = df[feature].quantile(0.75) - df[feature].quantile(0.25)
+        lower_fence = df[feature].quantile(0.25) - (1.5 * iqr)
+        upper_fence = df[feature].quantile(0.75) + (1.5 * iqr)
+        
+        potential_outliers_indicies = df.loc[
+            (df[feature] < lower_fence) | (df[feature] > upper_fence),
+            feature
+		].index
+
+    return potential_outliers_indicies # potential outliers
+
+
 def imputation_comaparison(df: pd.DataFrame, feature_name: str) -> plt.Figure: # maybe
 	# TODO: write a code that gives a data frame and the feature's name in it that we wanna impute the missing values in it using a technique
 	# ... then run multiple imputaion techniques on it and returns the histrogram distribution of the feature after each imputation technique
