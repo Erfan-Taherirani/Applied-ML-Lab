@@ -113,6 +113,17 @@ def describe(df: pd.DataFrame) -> pd.DataFrame:
 	return describe_df
 
 
+def category_percentage(s: pd.Series) -> pd.DataFrame:
+	"""Calculate the percentages for each category in a categorical variable.
+
+	:param s: The inptu Feauture
+	:return: The percentage data frame
+	"""
+	percentages = s.value_counts() / s.shape[0] * 100
+	percentages_df = pd.DataFrame(percentages.apply(lambda x: f"%{x: .2f}"))
+	return percentages_df.reset_index().rename(axis=1, mapper={"count": "percent"})
+
+
 def clean_numeric_column(series: pd.Series) -> pd.Series:
     """Clean a numeric column and fix it's dtype.
     
