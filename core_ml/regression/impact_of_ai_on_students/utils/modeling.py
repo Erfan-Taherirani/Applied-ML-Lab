@@ -1,3 +1,10 @@
+"""
+
+
+Functions:
+    - regression_report
+    - plot_learning_curve
+"""
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,7 +13,9 @@ from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import learning_curve
 
-def print_regression_evalutaion_metrics(model , X_test, y_test):
+def regression_report(
+        model: object , X_test: np.ndarray, y_test: np.ndarray
+) -> pd.DataFrame:
     mse = mean_squared_error(y_test, model.predict(X_test))
     rmse = root_mean_squared_error(y_test, model.predict(X_test))
     mae = mean_absolute_error(y_test, model.predict(X_test))
