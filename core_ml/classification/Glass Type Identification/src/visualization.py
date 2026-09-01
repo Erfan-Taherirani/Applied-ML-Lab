@@ -19,5 +19,6 @@ def plot_feature_distribution(df):
 			bins=20,
 			kde=True,
 		)
-		plt.legend(loc="upper right")
+		plt.legend(loc="best")
+		plt.tight_layout()
 		plt.show()
